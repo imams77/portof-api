@@ -58,7 +58,7 @@ $app->singleton(
 */
 
 $app->middleware([
-    App\Http\Middleware\ExampleMiddleware::class
+    App\Http\Middleware\CorsMiddleware::class
 ]);
 
 // $app->routeMiddleware([
@@ -100,7 +100,7 @@ $app->router->group([
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'role' => App\Http\Middleware\Role::class,
+    'role' => App\Http\Middleware\Role::class
 ]);
 
 return $app;
