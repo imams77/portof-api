@@ -54,7 +54,7 @@ class CategoryController extends Controller
       if (!is_null($request->get("parent"))) {
 
       }
-      $category = Category::where("category_id", $category_id)->first();
+      $category = Category::where("id", $category_id)->first();
       if (!is_null($category)) {
         return Helpers::generateResponse("Category found.", $category)->success;
       }

@@ -22,7 +22,7 @@ $router->group(['prefix' => '/api/v1'], function () use ($router) {
     $router->get('/users/{user_id}', ['as' => 'user.show','uses' => 'UserController@show']);
     $router->get('/users', ['as' => 'user.index', 'uses' => 'UserController@index']);
     $router->get('/categories', ['as' => 'category.index', 'uses' => 'CategoryController@index']);
-    $router->get('/category/{category_id}', ['as' => 'category.show', 'uses' => 'CategoryController@show']);
+    $router->get('/categories/{category_id}', ['as' => 'category.show', 'uses' => 'CategoryController@show']);
 
     $router->group(['middleware' => 'auth:api'], function () use ($router) {
         $router->get('/me', ['as' => 'auth.show', 'uses' => 'AuthController@show']);
