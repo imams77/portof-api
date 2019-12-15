@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('account_number')->nullable();
             $table->string('account_name')->nullable();
             $table->string('about_me')->nullable();
+            $table->string('profile_picture')->nullable();
+            $table->boolean('is_creator');
             $table->json('skills')->nullable();
             $table->timestamps();
         });

@@ -10,7 +10,7 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-$router->group(['prefix' => '/api/v1'], function () use ($router) {
+$router->group(['prefix' => '/api/v1', 'middleware' => 'cors'], function () use ($router) {
     $router->post('/register-admin', ['as' => 'auth.registerAdmin', 'uses' => 'AuthController@registerAdmin']);
     $router->post('/register-superadmin', ['as' => 'auth.registerSuperadmin','uses' => 'AuthController@registerSuperAdmin']);
     
@@ -24,14 +24,19 @@ $router->group(['prefix' => '/api/v1'], function () use ($router) {
     $router->get('/categories', ['as' => 'category.index', 'uses' => 'CategoryController@index']);
     $router->get('/categories/{category_id}', ['as' => 'category.show', 'uses' => 'CategoryController@show']);
 
+    $router->post('/sales-order', ['as' => 'so.create', 'uses' => 'SalesOrderController@store']);
+    $router->get('/sales-order/{order_number}', ['as' => 'so.detail', 'uses' => 'SalesOrderController@show']);
+    
     $router->group(['middleware' => 'auth:api'], function () use ($router) {
         $router->get('/me', ['as' => 'auth.show', 'uses' => 'AuthController@show']);
         $router->get('/me/products', ['as' => 'user.products', 'uses' => 'UserController@products']);
         $router->put('/me/like', ['as' => 'user.products', 'uses' => 'UserController@products']);
         $router->get('/me/products', ['as' => 'user.products', 'uses' => 'UserController@products']);
-        $router->put('/user/{user_id}', ['as' => 'user.update', 'uses' => 'UserController@update']);
+        $router->post('/me/payment-history', ['as' => 'so.create', 'uses' => 'UserController@paymentHistory']);
 
-        $router->put('/user/likes/{product_id}', ['as' => 'like.storeLike', 'uses' => 'LikeController@update']);
+        $router->put('/users/{user_id}', ['as' => 'user.update', 'uses' => 'UserController@update']);
+        
+        $router->put('/like/{product_id}', ['as' => 'like.storeLike', 'uses' => 'LikeController@update']);
         // $router->get('/user/likes');
         
         $router->group(['middleware' => 'role:admin'], function () use ($router) {

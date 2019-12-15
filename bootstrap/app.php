@@ -58,7 +58,8 @@ $app->singleton(
 */
 
 $app->middleware([
-    App\Http\Middleware\CorsMiddleware::class
+    // App\Http\Middleware\CorsMiddleware::class
+    palanik\lumen\Middleware\LumenCors::class
 ]);
 
 // $app->routeMiddleware([
@@ -79,9 +80,22 @@ $app->middleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+
+/*
+|--------------------------------------------------------------------------
+| Register Mail
+|--------------------------------------------------------------------------
+*/
+
+$app->configure('mail');
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -101,7 +115,8 @@ $app->router->group([
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'role' => App\Http\Middleware\Role::class
+    'role' => App\Http\Middleware\Role::class,
+    'cors' => palanik\lumen\Middleware\LumenCors::class,
 ]);
 
 return $app;

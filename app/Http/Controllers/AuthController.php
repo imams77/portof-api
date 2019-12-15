@@ -29,7 +29,8 @@ class AuthController extends Controller
       $register = User::create([
         'email'     => $email,
         'password'  => $password,
-        'user_type'  => 2
+        'user_type'  => 2,
+        'is_creator'  => true
       ]);
     }
 
@@ -40,7 +41,8 @@ class AuthController extends Controller
       $register = User::create([
         'email'     => $email,
         'password'  => $password,
-        'user_type'  => 3
+        'user_type'  => 3,
+        'is_creator'  => true
       ]);
     }
 
@@ -52,6 +54,7 @@ class AuthController extends Controller
       $user = User::where('email', $email)->first();
       if (!is_null($user)) {
         if (Hash::check($password, $user->password)) {
+          // $token = $this->jwt->attempt($request->only('email', 'password'));
           $token = $this->jwt->attempt($request->only('email', 'password'));
           // $request->session()->put('user_id', $user->id);
           return response()->json([
@@ -67,7 +70,7 @@ class AuthController extends Controller
             'success'   => false,
             'message'   => 'Wrong Password',
             'data'      => ''
-            ], 400);
+            ], 201);
         }
       } else {
         return response()->json([
@@ -82,24 +85,44 @@ class AuthController extends Controller
       $email = $request->input('email');
       $password = Hash::make($request->input('password'));
 
-      $register = User::create([
-        'email'     => $email,
-        'password'  => $password,
-        'user_type'  => 0
-      ]);
-      if ($register) {
-        return response()->json([
-          'success'   => true,
-          'message'   => 'Register Success!',
-          'data'      => $register
-        ], 201);
-      } else {
-        return response()->json([
-          'success'   => false,
-          'message'   => 'Register failed!',
-          'data'      => ''
-        ], 400);
+      $validator = $this->validate($request, [
+        'email'           => 'required',
+        'password'       => 'required|min:6'
+      ]); 
+      try {
+        $user = User::where('email', $email)->first();
+        if (is_null($user)) {
+          $register = User::create([
+            'email'     => $email,
+            'password'  => $password,
+            'user_type'  => 0,
+            'is_creator'  => false
+          ]);
+          try {
+            return response()->json([
+              'success'   => true,
+              'message'   => 'Register Success!',
+              'data'      => $register
+            ], 201);
+          } catch (\Exception $e) {
+            return response()->json([
+              'success'   => false,
+              'message'   => $e,
+              'data'      => ''
+            ], 201);
+          }
+        } else {
+          return response()->json([
+            'success'   => false,
+            'message'   => 'Email already registered.',
+            'data'      => ''
+          ], 201);
+        }
+      } catch(\Exception $e) {
+        return response()->json(['message' => 'User Registration Failed!'], 409);
       }
+
+      
     }
 
     public function show (Request $request) {

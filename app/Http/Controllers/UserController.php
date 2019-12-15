@@ -46,10 +46,11 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $user_id) {
-      $data = $request->all('full_name', 'phone_number', 'account_number', 'account_name', 'is_creator');
-      $validator = $this->validate($request, [
-        'full_name'       => 'required'
-      ]); 
+      // dd('123');
+      $data = $request->all('full_name', 'phone_number', 'account_number', 'account_name', 'is_creator', 'user_type');
+      // $validator = $this->validate($request, [
+      //   'full_name'       => 'required'
+      // ]);
       try {
         $current = User::findOrFail($user_id);
         $response = User::where('id', $user_id)->update([
@@ -57,8 +58,9 @@ class UserController extends Controller
           'phone_number'    => !is_null($data['phone_number']) ? $data['phone_number'] : $current->phone_number,
           'account_number'  => !is_null($data['account_number']) ? $data['account_number'] : $current->account_number,
           'account_name'   => !is_null($data['account_name']) ? $data['account_name'] : $current->account_name,
-          'is_creator'    => !is_null($data['is_creator']) ? $data['is_creator'] : $current->is_creator
-        ]);
+          'is_creator'    => !is_null($data['is_creator']) ? $data['is_creator'] : $current->is_creator,
+          'user_type'    => !is_null($data['user_type']) ? $data['user_type'] : $current->user_type
+          ]);
         return response()->json([
           "success"   => true,
           "data"      => User::findOrFail($user_id),
@@ -67,7 +69,7 @@ class UserController extends Controller
     
       } catch (\Exception $e) {
           //return error message
-          return response()->json(['message' => 'User Registration Failed!'], 409);
+          return response()->json(['message' => 'Update User Failed!'], 400);
       }
     }
 

@@ -55,4 +55,9 @@ class Helpers {
         return $res;
     }
 
+    // generate 5 digit number e.g 00001
+    public static function generateDigits($num) {
+        return sprintf("%'.05d", $num);
+    }
+
 }

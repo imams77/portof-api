@@ -31,7 +31,7 @@ class UploadController extends Controller
           "message"   => "Image uploaded Successfully."
         ], 200);
       } catch (\Exception $e) {
-        return response()->json(['message' => 'Upload Image Failed!'], 409);
+        return response()->json(['message' => 'Upload Image Failed!'], 400);
     }
   }
   public function file(Request $request) {
@@ -48,7 +48,7 @@ class UploadController extends Controller
         "message"   => "File uploaded Successfully."
       ], 200);
     } catch (\Exception $e) {
-      return response()->json(['message' => 'Upload Image Failed!'], 409);
+      return response()->json(['message' => 'Upload Image Failed!'], 400);
     }
   }
 }
