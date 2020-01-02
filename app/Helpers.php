@@ -55,6 +55,13 @@ class Helpers {
         return $res;
     }
 
+    public static function generateValidationErrors ($e) {
+        $errors = new \stdClass();
+        foreach ($e as $key => $error) {
+            $errors->{$key} = $error[0];;
+        }
+        return $errors;
+    }
     // generate 5 digit number e.g 00001
     public static function generateDigits($num) {
         return sprintf("%'.05d", $num);

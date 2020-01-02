@@ -8,12 +8,14 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Traits\uuid\UseUuid;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable;
+    use Authenticatable, Authorizable, UseUuid;
     
     protected $table = 'users';
+    
     // Rest omitted for brevity
 
     /**
@@ -41,6 +43,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'user_type',

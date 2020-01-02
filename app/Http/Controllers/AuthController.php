@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Support\Str;
+use Webpatser\Uuid\Uuid;
 
 use App\Models\User;
 
@@ -24,14 +25,18 @@ class AuthController extends Controller
     }
 
     public function registerAdmin (Request $request) {
+      // dd($this);
+      $uuid = Uuid::generate(4)->string;
       $email = $request->input('email');
       $password = Hash::make($request->input('password'));
-      $register = User::create([
+      $user = [
+        'id'        => $uuid,
         'email'     => $email,
         'password'  => $password,
         'user_type'  => 2,
         'is_creator'  => true
-      ]);
+      ];
+      $register = User::create($user);
     }
 
     public function registerSuperAdmin (Request $request) {
@@ -39,6 +44,7 @@ class AuthController extends Controller
       $password = Hash::make($request->input('password'));
 
       $register = User::create([
+
         'email'     => $email,
         'password'  => $password,
         'user_type'  => 3,
@@ -50,7 +56,6 @@ class AuthController extends Controller
 
       $email = $request->input('email');
       $password = $request->input('password');
-
       $user = User::where('email', $email)->first();
       if (!is_null($user)) {
         if (Hash::check($password, $user->password)) {
@@ -61,7 +66,7 @@ class AuthController extends Controller
             'success'   => true,
             'message'   => 'Welcome!',
             'data'      => [
-              'user'      => $user,
+              'user'      => $user->toArray(),
               'jwt'     => $this->respondWithToken($token)
             ]
             ], 201);
@@ -89,10 +94,13 @@ class AuthController extends Controller
         'email'           => 'required',
         'password'       => 'required|min:6'
       ]); 
+      
       try {
         $user = User::where('email', $email)->first();
         if (is_null($user)) {
+          $uuid = Uuid::generate(4)->string;
           $register = User::create([
+            'id'      => $uuid,
             'email'     => $email,
             'password'  => $password,
             'user_type'  => 0,

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Helpers;
 use Illuminate\Support\Facades\DB;
+use Webpatser\Uuid\Uuid;
 
 class ProductController extends Controller
 {
@@ -27,8 +28,7 @@ class ProductController extends Controller
     public function index (Request $request) {
       $category_id = $request->get('category_id');
       $user_id = $request->get('user_id');
-
-      $products = Product::all();
+      $products = Product::where('status', '=', 'published')->orWhere('status', '=', 'accepted');
 
       if (!is_null($category_id)) {
         $category = Category::where("id", $category_id)->first();
@@ -47,7 +47,7 @@ class ProductController extends Controller
       }
 
       $newProducts = [];
-      foreach ($products as $key => $product) {
+      foreach ($products->get() as $key => $product) {
         array_push($newProducts, $product);
       }
       return Helpers::generateResponse("Products Loaded.", $newProducts)->success;
@@ -61,7 +61,7 @@ class ProductController extends Controller
         'thumbnail_url',
         'price',
         'category_id',
-        'tags',
+        'tags'
       );
       $validate = $this->validate($request, [
         "name"          => "required|string|min:5",
@@ -70,38 +70,26 @@ class ProductController extends Controller
         "thumbnail_url" => "required",
         "price"         => "required|numeric"
       ]);
-
       try {
         $slug = Helpers::slugify($request->input('name'));
+        $uuid = Uuid::generate(4)->string;
         $response = Product::create([
+          "id"              => $uuid,
           "user_id"         => $this->auth->user()->id,
           "name"            => $data["name"],
           "download_url"    => $data["download_url"],
           "description"     => $data["description"],
           "thumbnail_url"   => $data["thumbnail_url"],
           "price"           => $data["price"],
+          "download_times"  => 0,
           "likes"           => 0,
           "status"          => "pending",
           "slug"            => $slug,
           "category_id"     => $data['category_id'],
         ]);
-        return response()->json([
-          "success"   => true,
-          "data"      => [
-            "user_id"         => $this->auth->user()->id,
-            "name"            => $data["name"],
-            "description"     => $data["description"],
-            "thumbnail_url"   => $data["thumbnail_url"],
-            "likes"           => 0,
-            "price"           => $data["price"],
-            "status"          => "pending",
-            "slug"            => $slug,
-            "category_id"     => $data['category_id'],
-          ],
-          "message"   => "Project uploaded successfully and will be checked by our admin. Please wait for our confirmation."
-        ], 200);
+        return Helpers::generateResponse("Project uploaded successfully and will be checked by our admin. Please wait for our confirmation.", $response)->success;
       } catch (\Exception $e) {
-        return response()->json(['message' => 'Create project failed!'], 409);
+        return Helpers::generateResponse("Failed to create project.")->fail;
       }
     }
     public function show (Request $request, $product_id) {

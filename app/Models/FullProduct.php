@@ -3,12 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\uuid\UseUuid;
 
-class FullProduct extends Model
+class Product extends Model
 {
+    use UseUuid;
     protected $table = 'products';
-    
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
+        'id',
         'name',
         'user_id', 
         'likes',
@@ -17,8 +25,10 @@ class FullProduct extends Model
         'description',
         'price',
         'status',
+        'download_times',
         'category_id',
         'tags',
         'slug'
     ];
+
 }

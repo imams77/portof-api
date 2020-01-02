@@ -14,7 +14,7 @@ class CreateSalesInvoiceTable extends Migration
     public function up()
     {
         Schema::create('sales_invoice', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id')->primary();
             $table->string('seller_name');
             $table->string('seller_id');
             $table->string('buyer_name');

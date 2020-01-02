@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Category;
 use App\Helpers;
+use Webpatser\Uuid\Uuid;
 
 class CategoryController extends Controller
 {
@@ -35,13 +36,16 @@ class CategoryController extends Controller
       try {
         $slug = Helpers::slugify($request->input('name'));
         if (is_null(Category::where("slug", $slug)->first())) {
-          $category = Category::create([
+          $uuid = Uuid::generate(4)->string;
+          $category = [
+            "id"    => $uuid,
             "name"  => $request->input('name'),
             "slug"  => $slug,
             "description" => $request->input('description'),
             "parent_category_id" => $request->input('parent_category_id'),
-          ]);
-          return Helpers::generateResponse("Category added successfully.", $category)->success;
+          ];
+          $response = Category::create($category);
+          return Helpers::generateResponse("Category added successfully.", $response)->success;
         } else {
           return Helpers::generateResponse("Category Exists.")->fail;
         }

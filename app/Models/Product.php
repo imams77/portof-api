@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\uuid\UseUuid;
 
 class Product extends Model
 {
+    use UseUuid;
     protected $table = 'products';
 
     /**
@@ -14,6 +16,7 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
+        'id',
         'name',
         'user_id', 
         'likes',
@@ -22,6 +25,7 @@ class Product extends Model
         'description',
         'price',
         'status',
+        'download_times',
         'category_id',
         'tags',
         'slug'

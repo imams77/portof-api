@@ -14,7 +14,7 @@ class CreateConfigurationTable extends Migration
     public function up()
     {
         Schema::create('configuration', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->json('data');
             $table->timestamps();

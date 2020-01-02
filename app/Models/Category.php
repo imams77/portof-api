@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\uuid\UseUuid;
 
 class Category extends Model
 {
+    use UseUuid;
+
     protected $table = 'categories';
 
     /**
@@ -14,6 +17,7 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
+        'id',
         'name',
         'slug',
         'description',

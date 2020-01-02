@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
+use App\Helpers;
+
 class UserController extends Controller
 {
     /**
@@ -75,6 +77,17 @@ class UserController extends Controller
 
     public function products (Request $request) {
       $products = DB::table('products')->where('user_id', $this->jwt->user()->id);
-      dd($products->get());
+      return Helpers::generateResponse("Success.", $products->get())->success;
+    }
+
+    public function orderHistory (Request $request) {
+      $orderHistory = DB::table('order_history')->where('user_id', $this->jwt->user()->id);
+      if ($request->get('status') !== null) {
+        $orderHistory = $orderHistory->where('status', '=', $request->get('status'));
+      }
+      if ($request->get('status-code') !== null) {
+        $orderHistory = $orderHistory->where('status_code', '=', $request->get('status-code'));
+      }
+      return Helpers::generateResponse("Success.", $orderHistory->get())->success;
     }
 }

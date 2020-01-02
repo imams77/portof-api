@@ -24,15 +24,20 @@ $router->group(['prefix' => '/api/v1', 'middleware' => 'cors'], function () use 
     $router->get('/categories', ['as' => 'category.index', 'uses' => 'CategoryController@index']);
     $router->get('/categories/{category_id}', ['as' => 'category.show', 'uses' => 'CategoryController@show']);
 
-    $router->post('/sales-order', ['as' => 'so.create', 'uses' => 'SalesOrderController@store']);
-    $router->get('/sales-order/{order_number}', ['as' => 'so.detail', 'uses' => 'SalesOrderController@show']);
+    $router->post('/sales-order', ['as' => 'so.create', 'uses' => 'OrderController@createSalesOrder']);
+    $router->get('/sales-order/{order_number}', ['as' => 'so.detail', 'uses' => 'OrderController@showSalesOrder']);
+
+    $router->post('/payment-confirmation', ['as' => 'payment.confirmation', 'uses' => 'OrderController@paymentConfirmation']);
+
+    $router->get('/order-history/{order_id}', ['as' => 'order.history', 'uses' => 'OrderController@history']);
+
     
     $router->group(['middleware' => 'auth:api'], function () use ($router) {
         $router->get('/me', ['as' => 'auth.show', 'uses' => 'AuthController@show']);
         $router->get('/me/products', ['as' => 'user.products', 'uses' => 'UserController@products']);
         $router->put('/me/like', ['as' => 'user.products', 'uses' => 'UserController@products']);
         $router->get('/me/products', ['as' => 'user.products', 'uses' => 'UserController@products']);
-        $router->post('/me/payment-history', ['as' => 'so.create', 'uses' => 'UserController@paymentHistory']);
+        $router->get('/me/order-history', ['as' => 'order.history', 'uses' => 'UserController@orderHistory']);
 
         $router->put('/users/{user_id}', ['as' => 'user.update', 'uses' => 'UserController@update']);
         

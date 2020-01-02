@@ -14,7 +14,7 @@ class CreateSalesOrderTable extends Migration
     public function up()
     {
         Schema::create('sales_order', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id')->primary();
             $table->string('full_name');
             $table->string('user_id');
             $table->string('email');
@@ -22,7 +22,10 @@ class CreateSalesOrderTable extends Migration
             $table->string('product_name');
             $table->string('order_number');
             $table->string('phone_number');
-            $table->string('price');
+            $table->bigInteger('price');
+            $table->bigInteger('unique_price');
+            $table->bigInteger('tax');
+            $table->bigInteger('total');
             $table->dateTime('expired_at');
             $table->string('download_url');
             $table->timestamps();

@@ -36,8 +36,9 @@ class UploadController extends Controller
   }
   public function file(Request $request) {
     $validator = $this->validate($request, [
-      'file'       => 'required|file|mimes:rar,zip|max:150000|'
+      'file'       => 'required|file|mimes:rar,zip|max:1500000|'
     ]); 
+    $response = Storage::disk('do')->putFile('files', $request->file('file'), 'public');
     try {
       $response = Storage::disk('do')->putFile('files', $request->file('file'), 'public');
       return response()->json([
